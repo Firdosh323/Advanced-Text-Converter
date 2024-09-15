@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Text Analyzer & Converter</title>
+    <meta name="description" content="TextPro: Your all-in-one solution for text analysis and conversion. Get detailed insights about your text, convert case, and estimate reading and speaking time.">
+    <meta name="keywords" content="text analysis, text conversion, case conversion, reading time, speaking time, keyword density, textpro, text case converter, title converter, title case converter, text case converter online, text case converter online free, convert small letter to capital in Excel, upper case converter, uppercase to lowercase in Word, lowercase letter, text case converter free, uppercase to lowercase in Word, sentence case converter">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -20,86 +22,252 @@
             -webkit-backdrop-filter: blur(4px);
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
+        .menu-item {
+            transition: all 0.3s ease;
+        }
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
-<body class="gradient-bg min-h-screen flex items-center justify-center p-4">
-    <div class="container max-w-4xl mx-auto">
-        <div class="glass-effect rounded-3xl p-8 shadow-2xl">
-            <h1 class="text-4xl font-semibold text-center mb-8 text-gray-800">Text Analyzer & Converter</h1>
-            
-            <div class="mb-6">
-                <textarea id="inputText" rows="5" class="w-full p-4 rounded-xl bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300" placeholder="Enter your text here..." oninput="updateStats()"></textarea>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
-                    <p class="text-sm text-gray-600">Characters</p>
-                    <p id="charCount" class="text-2xl font-semibold text-gray-800">0</p>
+<body class="gradient-bg min-h-screen flex flex-col">
+    <header class="glass-effect fixed w-full z-10">
+        <nav class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="text-2xl font-semibold text-gray-800">TextPro</div>
+                <div class="hidden md:flex space-x-4">
+                    <a href="#home" class="menu-item text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md">Home</a>
+                    <a href="#features" class="menu-item text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md">Features</a>
+                    <a href="#tool" class="menu-item text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md">Tool</a>
+                    <a href="#about" class="menu-item text-gray-800 hover:text-gray-600 px-3 py-2 rounded-md">About</a>
                 </div>
-                <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
-                    <p class="text-sm text-gray-600">Words</p>
-                    <p id="wordCount" class="text-2xl font-semibold text-gray-800">0</p>
-                </div>
-                <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
-                    <p class="text-sm text-gray-600">Sentences</p>
-                    <p id="sentenceCount" class="text-2xl font-semibold text-gray-800">0</p>
-                </div>
-                <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
-                    <p class="text-sm text-gray-600">Paragraphs</p>
-                    <p id="paragraphCount" class="text-2xl font-semibold text-gray-800">0</p>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-gray-800 hover:text-gray-600 focus:outline-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
                 </div>
             </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
-                    <p class="text-sm text-gray-600">Reading Time</p>
-                    <p id="readingTime" class="text-2xl font-semibold text-gray-800">0 min</p>
-                </div>
-                <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
-                    <p class="text-sm text-gray-600">Speaking Time</p>
-                    <p id="speakingTime" class="text-2xl font-semibold text-gray-800">0 min</p>
-                </div>
-                <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center md:col-span-1">
-                    <p class="text-sm text-gray-600">Keyword Density</p>
-                    <p id="keywordDensity" class="text-xl font-semibold text-gray-800">N/A</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
-                <button onclick="convertCase('upper')" class="btn p-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition duration-300">
-                    <i class="fas fa-arrow-up mr-2"></i> UPPERCASE
-                </button>
-                <button onclick="convertCase('lower')" class="btn p-2 rounded-xl bg-green-500 text-white hover:bg-green-600 transition duration-300">
-                    <i class="fas fa-arrow-down mr-2"></i> lowercase
-                </button>
-                <button onclick="convertCase('capitalize')" class="btn p-2 rounded-xl bg-yellow-500 text-white hover:bg-yellow-600 transition duration-300">
-                    <i class="fas fa-font mr-2"></i> Capitalize Words
-                </button>
-                <button onclick="convertCase('sentence')" class="btn p-2 rounded-xl bg-red-500 text-white hover:bg-red-600 transition duration-300">
-                    <i class="fas fa-align-left mr-2"></i> Sentence case
-                </button>
-                <button onclick="convertCase('alternate')" class="btn p-2 rounded-xl bg-purple-500 text-white hover:bg-purple-600 transition duration-300">
-                    <i class="fas fa-random mr-2"></i> aLtErNaTiNg CaSe
-                </button>
-                <button onclick="convertCase('title')" class="btn p-2 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300">
-                    <i class="fas fa-heading mr-2"></i> Title Case
-                </button>
-            </div>
-
-            <div class="mb-6">
-                <textarea id="outputText" rows="5" class="w-full p-4 rounded-xl bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300" placeholder="Converted text will appear here..." readonly></textarea>
-            </div>
-
-            <div class="flex justify-between">
-                <button onclick="copyToClipboard()" class="btn px-4 py-2 rounded-xl bg-gray-600 text-white hover:bg-gray-700 transition duration-300">
-                    <i class="fas fa-copy mr-2"></i> Copy
-                </button>
-                <button onclick="clearText()" class="btn px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition duration-300">
-                    <i class="fas fa-trash mr-2"></i> Clear
-                </button>
-            </div>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden">
+            <a href="#home" class="block menu-item text-gray-800 hover:text-gray-600 px-3 py-2">Home</a>
+            <a href="#features" class="block menu-item text-gray-800 hover:text-gray-600 px-3 py-2">Features</a>
+            <a href="#tool" class="block menu-item text-gray-800 hover:text-gray-600 px-3 py-2">Tool</a>
+            <a href="#about" class="block menu-item text-gray-800 hover:text-gray-600 px-3 py-2">About</a>
         </div>
-    </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 pt-20">
+        <section id="home" class="py-20">
+            <div class="text-center">
+                <h1 class="text-5xl font-bold text-gray-800 mb-4">Welcome to TextPro</h1>
+                <p class="text-xl text-gray-600">Your all-in-one solution for text analysis and conversion</p>
+            </div>
+        </section>
+
+        <section id="features" class="py-20">
+            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-10">Features</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-effect p-6 rounded-xl text-center">
+                    <i class="fas fa-chart-bar text-4xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Text Analysis</h3>
+                    <p class="text-gray-600">Get detailed insights about your text</p>
+                </div>
+                <div class="glass-effect p-6 rounded-xl text-center">
+                    <i class="fas fa-exchange-alt text-4xl text-green-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Case Conversion</h3>
+                    <p class="text-gray-600">Convert text to various case styles</p>
+                </div>
+                <div class="glass-effect p-6 rounded-xl text-center">
+                    <i class="fas fa-tachometer-alt text-4xl text-purple-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Reading Metrics</h3>
+                    <p class="text-gray-600">Estimate reading and speaking time</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="tool" class="py-20">
+            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-10">Text Analyzer & Converter</h2>
+            <div class="glass-effect rounded-3xl p-8 shadow-2xl">
+                <div class="mb-6">
+                    <textarea id="inputText" rows="5" class="w-full p-4 rounded-xl bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300" placeholder="Enter your text here..." oninput="updateStats()"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                    <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
+                        <p class="text-sm text-gray-600">Characters</p>
+                        <p id="charCount" class="text-2xl font-semibold text-gray-800">0</p>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
+                        <p class="text-sm text-gray-600">Words</p>
+                        <p id="wordCount" class="text-2xl font-semibold text-gray-800">0</p>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
+                        <p class="text-sm text-gray-600">Sentences</p>
+                        <p id="sentenceCount" class="text-2xl font-semibold text-gray-800">0</p>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
+                        <p class="text-sm text-gray-600">Paragraphs</p>
+                        <p id="paragraphCount" class="text-2xl font-semibold text-gray-800">0</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
+                        <p class="text-sm text-gray-600">Reading Time</p>
+                        <p id="readingTime" class="text-2xl font-semibold text-gray-800">0 min</p>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center">
+                        <p class="text-sm text-gray-600">Speaking Time</p>
+                        <p id="speakingTime" class="text-2xl font-semibold text-gray-800">0 min</p>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl bg-white bg-opacity-50 text-center md:col-span-1">
+                        <p class="text-sm text-gray-600">Keyword Density</p>
+                        <p id="keywordDensity" class="text-xl font-semibold text-gray-800">N/A</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+                    <button onclick="convertCase('upper')" class="btn p-2 rounded-xl bg-blue-500 text-white hover:bg-blue-600 transition duration-300">
+                        <i class="fas fa-arrow-up mr-2"></i> UPPERCASE
+                    </button>
+                    <button onclick="convertCase('lower')" class="btn p-2 rounded-xl bg-green-500 text-white hover:bg-green-600 transition duration-300">
+                        <i class="fas fa-arrow-down mr-2"></i> lowercase
+                    </button>
+                    <button onclick="convertCase('capitalize')" class="btn p-2 rounded-xl bg-yellow-500 text-white hover:bg-yellow-600 transition duration-300">
+                        <i class="fas fa-font mr-2"></i> Capitalize Words
+                    </button>
+                    <button onclick="convertCase('sentence')" class="btn p-2 rounded-xl bg-red-500 text-white hover:bg-red-600 transition duration-300">
+                        <i class="fas fa-align-left mr-2"></i> Sentence case
+                    </button>
+                    <button onclick="convertCase('alternate')" class="btn p-2 rounded-xl bg-purple-500 text-white hover:bg-purple-600 transition duration-300">
+                        <i class="fas fa-random mr-2"></i> aLtErNaTiNg CaSe
+                    </button>
+                    <button onclick="convertCase('title')" class="btn p-2 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition duration-300">
+                        <i class="fas fa-heading mr-2"></i> Title Case
+                    </button>
+                </div>
+
+                <div class="mb-6">
+                    <textarea id="outputText" rows="5" class="w-full p-4 rounded-xl bg-white bg-opacity-50 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300" placeholder="Converted text will appear here..." readonly></textarea>
+                </div>
+
+                <div class="flex justify-between">
+                    <button onclick="copyToClipboard()" class="btn px-4 py-2 rounded-xl bg-gray-600 text-white hover:bg-gray-700 transition duration-300">
+                        <i class="fas fa-copy mr-2"></i> Copy
+                    </button>
+                    <button onclick="clearText()" class="btn px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition duration-300">
+                        <i class="fas fa-trash mr-2"></i> Clear
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="py-20">
+            <section id="article" class="py-20">
+                <h1 class="text-3xl font-semibold text-center text-gray-800 mb-10">Text Case Converter: Best Tool for Converting Text Case Online</h1>
+                <div class="glass-effect p-8 rounded-xl">
+                    <h2 class="text-2xl font-semibold mb-2">Best Tool for Converting Text Case Online</h2>
+                    <p class="text-gray-600">Are you tired of manually converting text case in your documents? Do you struggle with converting small letters to capital letters in Excel or switching between uppercase and lowercase in Word? Look no further! Our text case converter tool is here to help.</p>
+                    <h2 class="text-2xl font-semibold mb-2">What is a Text Case Converter?</h2>
+                    <p class="text-gray-600">A text case converter is a tool that allows you to convert text from one case to another. This can include converting uppercase to lowercase, lowercase to uppercase, title case, and sentence case. Our text case converter tool is designed to make this process easy and efficient.</p>
+                    <h2 class="text-2xl font-semibold mb-2">How to Use Our Text Case Converter Tool</h2>
+                    <ol class="list-decimal list-inside mb-4">
+                        <li>Enter the text you want to convert in the input field.</li>
+                        <li>Select the desired case conversion option from the dropdown menu.</li>
+                        <li>Click the "Convert" button.</li>
+                        <li>The converted text will appear in the output field.</li>
+                    </ol>
+                    <h2 class="text-2xl font-semibold mb-2">Benefits of Using a Text Case Converter</h2>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>Save time: Manually converting text case can be time-consuming. Our tool saves you time and effort.</li>
+                        <li>Improve accuracy: Our tool ensures accurate conversions, eliminating the risk of human error.</li>
+                        <li>Increase productivity: With our tool, you can focus on more important tasks and increase your productivity.</li>
+                    </ul>
+                    <h2 class="text-2xl font-semibold mb-2">Common Use Cases for a Text Case Converter</h2>
+                    <ul class="list-disc list-inside mb-4">
+                        <li>Convert small letter to capital in Excel: Our tool makes it easy to convert small letters to capital letters in Excel.</li>
+                        <li>Uppercase to lowercase in Word: Easily switch between uppercase and lowercase in Word with our tool.</li>
+                        <li>Sentence case converter: Convert text to sentence case with our tool.</li>
+                        <li>Title case converter: Convert text to title case with our tool.</li>
+                    </ul>
+                    <p class="text-gray-600">Our text case converter tool is the ultimate solution for converting text case online. With its ease of use, accuracy, and productivity benefits, it's a must-have tool for anyone who works with text. Try it now and see the difference for yourself!</p>
+                    <h2 class="text-2xl font-semibold mb-2">Mastering the Use of a Text Case Converter</h2>
+                    <p class="text-gray-600">In today’s fast-paced digital world, text formatting can become repetitive and time-consuming. If you frequently need to adjust the capitalization of words for presentations, articles, or coding, a <strong>text case converter</strong> can be your go-to tool. This efficient solution allows you to switch between title case, sentence case, uppercase, and lowercase without the need to manually retype anything.</p>
+
+                    <h2 class="text-2xl font-semibold mb-2">What is a Text Case Converter?</h2>
+                    <p class="text-gray-600">A <strong>text case converter</strong> is a tool that changes the capitalization of text automatically. Whether you need to switch from uppercase to lowercase or vice versa, or use specific formats like title or sentence case, this tool handles it effortlessly. It’s especially helpful for writers, students, and developers working with large volumes of text.</p>
+
+                    <h2 class="text-2xl font-semibold mb-2">How to Use a Text Case Converter Online for Free</h2>
+                    <ol class="list-decimal list-inside mb-4">
+                        <li>Copy the text you want to convert.</li>
+                        <li>Paste the text into the input field of a text case converter tool.</li>
+                        <li>Select the desired case format (uppercase, lowercase, title case, or sentence case).</li>
+                        <li>Click the "Convert" button to instantly change the text's case.</li>
+                    </ol>
+
+                    <h2 class="text-2xl font-semibold mb-2">Benefits of Using a Text Case Converter</h2>
+                    <ul class="list-disc list-inside mb-4">
+                        <li><strong>Save time:</strong> Manually converting text case is time-consuming. A text case converter automates this task, saving you significant time.</li>
+                        <li><strong>Improve accuracy:</strong> By automating the conversion, you eliminate the potential for human error.</li>
+                        <li><strong>Increase productivity:</strong> With formatting done in seconds, you can focus on more important tasks, improving overall productivity.</li>
+                    </ul>
+
+                    <h2 class="text-2xl font-semibold mb-2">Common Use Cases for a Text Case Converter</h2>
+                    <ul class="list-disc list-inside mb-4">
+                        <li><strong>Convert small letter to capital in Excel:</strong> A text case converter simplifies the process of converting small letters to uppercase in Excel using the <code>UPPER()</code> function.</li>
+                        <li><strong>Uppercase to lowercase in Word:</strong> You can easily switch between uppercase and lowercase in Word with just a few clicks using Word’s “Change Case” function.</li>
+                        <li><strong>Sentence case converter:</strong> Need to convert text to sentence case? A text case converter makes the job quick and easy.</li>
+                        <li><strong>Title case converter:</strong> When creating professional headlines or titles, the title case converter ensures proper capitalization rules are followed.</li>
+                    </ul>
+
+                    <h2 class="text-2xl font-semibold mb-2">Why Proper Text Formatting is Important</h2>
+                    <p class="text-gray-600">Text formatting impacts readability and professionalism. Using correct case styles in your content can greatly improve the user experience and ensure clarity. Whether you're preparing a document, presentation, or writing code, a case converter ensures that everything is formatted consistently and efficiently.</p>
+
+                    <h2 class="text-2xl font-semibold mb-2">Convert Small Letters to Capital in Excel</h2>
+                    <p class="text-gray-600">If you work with data in Excel, converting lowercase to uppercase can be necessary for consistency. To <strong>convert small letter to capital in Excel</strong>, simply use the <code>UPPER()</code> function:</p>
+                    <ol class="list-decimal list-inside mb-4">
+                        <li>Type <code>=UPPER(A1)</code> where A1 is the cell containing the text you want to convert.</li>
+                        <li>Drag the formula down to apply it to other cells.</li>
+                        <li>Your text will instantly be converted to uppercase.</li>
+                    </ol>
+
+                    <h2 class="text-2xl font-semibold mb-2">Switch Uppercase to Lowercase in Word</h2>
+                    <p class="text-gray-600">Converting uppercase to lowercase in Word is simple. Use Word’s “Change Case” function for quick adjustments:</p>
+                    <ol class="list-decimal list-inside mb-4">
+                        <li>Highlight the text you wish to convert.</li>
+                        <li>Go to the <strong>Home</strong> tab and select the <strong>Change Case</strong> button in the Font section.</li>
+                        <li>Choose <strong>lowercase</strong> from the dropdown menu.</li>
+                    </ol>
+                    <p class="text-gray-600">Alternatively, use the <strong>Shift + F3</strong> shortcut to toggle between uppercase, lowercase, and title case.</p>
+
+                    <h2 class="text-2xl font-semibold mb-2">FAQs About Text Case Converters</h2>
+                    <ul class="list-disc list-inside mb-4">
+                        <li><strong>What is the best text case converter for online use?</strong> Several tools like Capitalize My Title and Convert Case are popular for their simplicity and range of options.</li>
+                        <li><strong>Can I convert small letters to capital in Excel?</strong> Yes, use the <code>UPPER()</code> function to quickly convert text to uppercase.</li>
+                        <li><strong>How do I change uppercase to lowercase in Word?</strong> Highlight the text, navigate to the “Change Case” option in the Font section, and select “lowercase.”</li>
+                        <li><strong>Is there a free sentence case converter online?</strong> Many free tools allow you to convert text to sentence case instantly, ensuring proper capitalization for long paragraphs.</li>
+                    </ul>
+
+                    <h2 class="text-2xl font-semibold mb-2">Conclusion</h2>
+                    <p class="text-gray-600">A <strong>text case converter</strong> makes formatting quick and easy, saving you time and effort. Whether converting text in Word, Excel, or using an online tool, this simple solution helps you maintain consistency and professionalism in your writing.</p>
+
+</body>
+
+                </div>
+            </section>
+            <h2 class="text-3xl font-semibold text-center text-gray-800 mb-10">About TextPro</h2>
+            <div class="glass-effect p-8 rounded-xl">
+                <p class="text-gray-600 text-center">TextPro is a powerful tool designed to help you analyze and manipulate text with ease. Whether you're a writer, student, or professional, our tool provides valuable insights and convenient text conversion options to enhance your work.</p>
+                
+            </div>
+        </section>
+    </main>
+
+    <footer class="glass-effect mt-auto">
+        <div class="container mx-auto px-6 py-4">
+            <p class="text-center text-gray-600">&copy; 2024 TextPro. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script>
         function convertCase(caseType) {
@@ -163,15 +331,15 @@
             const paragraphs = text.trim().split(/\n{2,}/);
             const paragraphCount = paragraphs.filter(paragraph => paragraph !== '').length;
             document.getElementById('paragraphCount').textContent = paragraphCount;
-            
+           
             // Reading time (assuming 200 words per minute)
             const readingTime = Math.ceil(wordCount / 200);
             document.getElementById('readingTime').textContent = `${readingTime} min`;
             
-            // Speaking time (assuming 130 words per minute)
-            const speakingTime = Math.ceil(wordCount / 130);
+            // Speaking
+            const speakingTime = Math.ceil(wordCount / 125);
             document.getElementById('speakingTime').textContent = `${speakingTime} min`;
-            
+
             // Keyword density (most frequent word)
             if (wordCount > 0) {
                 const wordFrequency = {};
@@ -193,8 +361,9 @@
             }
         }
 
-        // Initialize stats on page load
-        updateStats();
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+    document.getElementById('mobile-menu').classList.toggle('hidden');
+  });
     </script>
 </body>
 </html>
